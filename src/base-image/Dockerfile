@@ -37,7 +37,8 @@ WORKDIR /home/vscode
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # ── Python 3.12, 3.13, 3.14 via uv ──────────────────────────────────────────
-RUN uv python install 3.12 3.13 3.14
+RUN uv python install 3.12 3.13 3.14 \
+    && ln -s $(which python3.14) /home/vscode/.local/bin/python
 
 # ── Poetry via uv tool (uses uv-managed Python; no separate system python3 needed) ──
 RUN uv tool install poetry
