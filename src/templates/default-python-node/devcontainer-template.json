@@ -1,6 +1,6 @@
 {
   "id": "default-python-node",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "name": "Python + Node.js Dev Base",
   "description": "Debian Trixie base with Node.js v22, Python 3.12/3.13/3.14 (via uv), Poetry, and Claude Code CLI. Persists bash history, Claude data, and Gemini auth via named volumes.",
   "documentationURL": "https://github.com/tomasvotava/devcontainer-templates",

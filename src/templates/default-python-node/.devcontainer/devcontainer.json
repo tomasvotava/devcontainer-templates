@@ -3,13 +3,11 @@
   "image": "ghcr.io/${templateOption:imageOwner}/dev-base:latest",
   "remoteUser": "vscode",
   "features": {
-    "ghcr.io/devcontainers/features/common-utils:1": {},
     "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
       "version": "29.2",
       "enableNonRootDocker": true,
       "moby": false
-    },
-    "ghcr.io/devcontainers/features/github-cli:1": {}
+    }
   },
   "runArgs": [
     "--env-file",
