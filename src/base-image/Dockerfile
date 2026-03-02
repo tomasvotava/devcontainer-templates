@@ -1,12 +1,16 @@
 FROM debian:trixie-slim
 
 ENV DEBIAN_FRONTEND=noninteractive \
-    PATH="/home/vscode/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+    PATH="/home/vscode/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" \
+    LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8
 
 # ── System packages ───────────────────────────────────────────────────────────
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        curl git vim make sudo build-essential ca-certificates zsh fzf wget procps less \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --install-recommends \
+        curl git vim make sudo build-essential ca-certificates zsh fzf wget procps less openssh-client gh locales \
+    && rm -rf /var/lib/apt/lists/* \
+    && locale-gen en_US.UTF-8
 
 # ── Node.js v22 LTS via NodeSource ───────────────────────────────────────────
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
@@ -26,16 +30,6 @@ RUN mkdir /commandhistory \
     && chown -R vscode:vscode /commandhistory \
     && mkdir -p /home/vscode/.claude /home/vscode/.config/Google \
     && chown -R vscode:vscode /home/vscode/.claude /home/vscode/.config
-
-
-RUN mkdir -p -m 755 /etc/apt/keyrings \
-	&& out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
-	&& cat $out | tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
-	&& chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
-	&& mkdir -p -m 755 /etc/apt/sources.list.d \
-	&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-	&& apt-get update \
-	&& apt-get install gh -y
 
 # ── Switch to vscode for user-scoped installs ────────────────────────────────
 USER vscode
