@@ -22,10 +22,12 @@ RUN groupadd --gid 1000 vscode \
     && echo "vscode ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/vscode \
     && chmod 0440 /etc/sudoers.d/vscode
 
-# ── Bash history volume mount point ──────────────────────────────────────────
+# ── Volume mount points ──────────────────────────────────────────
 RUN mkdir /commandhistory \
     && touch /commandhistory/.bash_history \
-    && chown -R vscode:vscode /commandhistory
+    && chown -R vscode:vscode /commandhistory \
+    && mkdir -p /home/vscode/.claude /home/vscode/.config/Google \
+    && chown -R vscode:vscode /home/vscode/.claude /home/vscode/.config
 
 # ── Switch to vscode for user-scoped installs ────────────────────────────────
 USER vscode
