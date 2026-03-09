@@ -1,0 +1,13 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+add_newline = true
+
+[character]
+success_symbol = "[➜](bold green)"
+error_symbol = "[x](bold red)"
+
+[custom.uv_or_poetry]
+command = 'grep -q tool.poetry pyproject.toml && echo "poetry" || echo "uv"'
+symbol = " "
+when = ' test -f "pyproject.toml" '
+style = "green"

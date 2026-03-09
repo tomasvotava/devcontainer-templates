@@ -8,7 +8,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 
 # ── System packages ───────────────────────────────────────────────────────────
 RUN apt-get update && apt-get install -y --install-recommends \
-        curl git vim make sudo build-essential ca-certificates zsh fzf wget procps less openssh-client gh locales \
+        curl git vim make sudo build-essential ca-certificates zsh fzf wget procps less openssh-client gh locales jq starship \
     && rm -rf /var/lib/apt/lists/* \
     && echo "en_US.UTF-8 UTF-8" | tee -a /etc/locale.gen \
     && locale-gen en_US.UTF-8
@@ -29,12 +29,16 @@ RUN groupadd --gid 1000 vscode \
 RUN mkdir /commandhistory \
     && touch /commandhistory/.bash_history \
     && chown -R vscode:vscode /commandhistory \
-    && mkdir -p /home/vscode/.claude /home/vscode/.config/Google \
-    && chown -R vscode:vscode /home/vscode/.claude /home/vscode/.config
+    && mkdir -p /home/vscode/.claude /home/vscode/.config/Google
+
+COPY ./starship.toml /home/vscode/.config/
+
+RUN chown -R vscode:vscode /home/vscode/.claude /home/vscode/.config
 
 # ── Switch to vscode for user-scoped installs ────────────────────────────────
 USER vscode
 WORKDIR /home/vscode
+
     
 # zsh
 RUN sh -c "$(curl -L https://github.com/deluan/zsh-in-docker/releases/download/v1.2.1/zsh-in-docker.sh)" -- \
@@ -44,8 +48,9 @@ RUN sh -c "$(curl -L https://github.com/deluan/zsh-in-docker/releases/download/v
     -p https://github.com/zsh-users/zsh-completions \
     -a "export PROMPT_COMMAND='history -a' && export HISTFILE=/commandhistory/.bash_history" \
     -a 'export PATH="$HOME/.local/bin:$PATH"' \
-    -x
-
+    -x \
+    && echo 'eval "$(starship init zsh)"' >> "$HOME/.zshrc"
+    
 ENV SHELL=/bin/zsh
 
 # ── uv (standalone installer) ────────────────────────────────────────────────
@@ -58,4 +63,9 @@ RUN uv python install 3.12 3.13 3.14 \
 
 # ── Poetry via uv tool (uses uv-managed Python; no separate system python3 needed) ──
 RUN uv tool install poetry \
-    && uv tool install sqlfluff
+    && uv tool install sqlfluff \
+    && uv tool install commitizen \
+    && uv tool install copier \
+    && uv tool install pre-commit
+
+ENTRYPOINT [ "/bin/zsh" ]
