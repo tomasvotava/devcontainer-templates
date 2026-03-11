@@ -8,7 +8,8 @@ ENV DEBIAN_FRONTEND=noninteractive \
 
 # ── System packages ───────────────────────────────────────────────────────────
 RUN apt-get update && apt-get install -y --install-recommends \
-        curl git vim make sudo build-essential ca-certificates zsh fzf wget procps less openssh-client gh locales jq starship \
+        curl git git-lfs vim make sudo build-essential ca-certificates zsh \
+        fzf wget procps less openssh-client gh locales jq starship \
     && rm -rf /var/lib/apt/lists/* \
     && echo "en_US.UTF-8 UTF-8" | tee -a /etc/locale.gen \
     && locale-gen en_US.UTF-8
